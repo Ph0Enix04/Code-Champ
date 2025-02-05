@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:code_champ/home.dart';
 import 'package:get/get.dart';
 import 'package:code_champ/splash_screen.dart';
+<<<<<<< HEAD
 
+=======
+>>>>>>> 5adf43b (Initial commit)
 import 'login.dart';
 
 void main() {
