@@ -3,14 +3,6 @@
 A new Flutter project.
 
 ## Getting Started
+In this project we are trying to solve a common problem that we often face when doing competitive programming. we always think it would be great to be updated about the upcoming event realted to competitive programming both in offline and online. and it give you a opportunity to be connect we with other competitive programming aspirant and also track all their data. you can also create a club and add your friends in that and do group work...
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+so this is the basic idea about the app. we are doing this for our 3rd sem software development course...
