@@ -4,10 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../utils/constants/image_strings.dart';
+import '../../utils/popups/loaders.dart';
 
 class SignupController extends GetxController {
   static SignupController get instance => Get.find();
   ///variables
+  final hidePassword = true.obs;
   final email = TextEditingController();
   final lastName = TextEditingController();
   final userName = TextEditingController();
@@ -20,11 +22,20 @@ class SignupController extends GetxController {
     try
     {
       // start loading
-      //TFullScreenLoader.openLoadingDialog('we are processing your information', TImages.docerAnimation);
+      TFullScreenLoader.openLoadingDialog('we are processing your information', TImages.docerAnimation);
       //check Internet Connectivity
       final isConnected = await NetworkManager.instance.isConnected();
+      if(!isConnected)
+        {
+          TFullScreenLoader.stopLoading();
+          return;
+        }
       //form validation
-
+        if(signupFormKey.currentState!.validate())
+          {
+              TFullScreenLoader.stopLoading();
+              return;
+          }
       //privecy policy check
 
       //save authenticated user data in the firebase
@@ -35,9 +46,11 @@ class SignupController extends GetxController {
     }
     catch(e) {
       //show some generic error to the user
+      TLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
     finally
     {
+      TFullScreenLoader.stopLoading();
       //remove user
     }
   }

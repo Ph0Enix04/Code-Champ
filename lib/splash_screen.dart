@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:code_champ/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:particles_flutter/particles_flutter.dart';
@@ -54,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     Future.delayed(const Duration(seconds: 4), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) =>  HomePage(),
+          builder: (_) =>  LoginPage(),
         ),
       );
     });

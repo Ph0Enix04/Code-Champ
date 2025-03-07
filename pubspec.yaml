@@ -57,6 +57,7 @@ dependencies:
   carousel_slider: ^5.0.0
   flutter_rating_bar: ^4.0.1
   capped_progress_indicator: ^0.0.2
+  flutter_launcher_icons: ^0.13.1
   #firebase
   firebase_core: ^2.0.0
   firebase_database: ^10.0.0
@@ -64,7 +65,10 @@ dependencies:
   cloud_firestore: ^4.17.2
   firebase_storage: ^11.7.4
 
-
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "/home/rakibul/AndroidStudioProjects/Code-Champ-main/lib/assets/logo.png"
 dev_dependencies:
   flutter_test:
     sdk: flutter

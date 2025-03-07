@@ -1,3 +1,4 @@
+import 'package:code_champ/authentication/signup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'forgotpass.dart';
@@ -114,10 +115,10 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => const RegistrationPage()),
-                  // );
+                   Navigator.push(
+                     context,
+                     MaterialPageRoute(builder: (context) => const signUp()),
+                   );
                 },
                 child: const Text(
                   "Don't have an account? Register now",
