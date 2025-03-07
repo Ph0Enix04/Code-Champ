@@ -65,14 +65,13 @@ dependencies:
   cloud_firestore: ^4.17.2
   firebase_storage: ^11.7.4
 
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "/home/rakibul/AndroidStudioProjects/Code-Champ-main/lib/assets/logo.png"
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "lib/assets/logo.png"
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
