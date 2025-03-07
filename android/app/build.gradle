@@ -40,6 +40,12 @@ android {
     buildFeatures {
         buildConfig true
     }
+    compileSdkVersion 35 // Ensure this is Android 33 or compatible
+
+    defaultConfig {
+        minSdkVersion 21  // Or whichever version you're supporting
+        targetSdkVersion 35  // Ensure this is also 33
+    }
 }
 
 flutter {
