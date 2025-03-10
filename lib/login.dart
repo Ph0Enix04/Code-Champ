@@ -1,4 +1,4 @@
-import 'package:code_champ/authentication/signup.dart';
+import 'package:code_champ/signUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'forgotpass.dart';
@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () {
                    Navigator.push(
                      context,
-                     MaterialPageRoute(builder: (context) => const signUp()),
+                     MaterialPageRoute(builder: (context) => RegistrationPage()),
                    );
                 },
                 child: const Text(

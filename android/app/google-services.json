@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "818199448469",
+    "project_id": "codechamp-8829e",
+    "storage_bucket": "codechamp-8829e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818199448469:android:427c1b7b6e49ca0a27049c",
+        "android_client_info": {
+          "package_name": "com.example.code_champ"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4ahn6HP2eDCGqRseswvoyK4PGCQqW81w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
