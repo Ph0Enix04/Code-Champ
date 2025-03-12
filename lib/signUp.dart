@@ -1,13 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:code_champ/controller.dart';
-import 'package:code_champ/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:icons_plus/icons_plus.dart';
-
+import 'Thankyou.dart';
 import 'controller.dart';
+import 'login.dart';
 
 class RegistrationPage extends StatefulWidget {
   @override
@@ -16,6 +11,9 @@ class RegistrationPage extends StatefulWidget {
 
 class _RegistrationPageState extends State<RegistrationPage> {
   bool isChecked = false;
+
+  // Initialize UserController Once
+  final UserController userController = Get.put(UserController());
 
   @override
   Widget build(BuildContext context) {
@@ -31,79 +29,67 @@ class _RegistrationPageState extends State<RegistrationPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               SizedBox(height: 40),
-              Text(
-                'Create Your Account',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
+              Text('Create Your Account',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87)),
               SizedBox(height: 20),
+
+              // Username Field
               TextField(
-                controller: Get.find<UserController>().userName,
+                controller: userController.userName,
                 decoration: InputDecoration(
                   hintText: 'Username',
                   prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
               SizedBox(height: 16),
+
+              // First Name Field
               TextField(
-                controller: Get.find<UserController>().firstName,
+                controller: userController.firstName,
                 decoration: InputDecoration(
                   hintText: 'First Name',
                   prefixIcon: Icon(Icons.account_circle),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
               SizedBox(height: 16),
-              TextField(
-                controller: Get.find<UserController>().lastName,
-                decoration: InputDecoration(
 
+              // Last Name Field
+              TextField(
+                controller: userController.lastName,
+                decoration: InputDecoration(
                   hintText: 'Last Name',
                   prefixIcon: Icon(Icons.account_circle),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
               SizedBox(height: 16),
-              TextField(
-                controller: Get.find<UserController>().password,
-                obscureText: true,
-                decoration: InputDecoration(
 
-                  hintText: 'Password',
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
+              // Email Field
               TextField(
-                controller: Get.find<UserController>().email,
+                controller: userController.email,
                 decoration: InputDecoration(
                   hintText: 'Email',
-
                   prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+                ),
+              ),
+              SizedBox(height: 16),
+
+              // Password Field
+              TextField(
+                controller: userController.password,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: 'Password',
+                  prefixIcon: Icon(Icons.lock),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
               SizedBox(height: 20),
+
+              // Terms and Conditions Checkbox
               Row(
                 children: <Widget>[
                   Checkbox(
@@ -123,63 +109,41 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 ],
               ),
               SizedBox(height: 20),
+
+              // Sign Up Button
               ElevatedButton(
                 onPressed: () {
+                  print('Sign Up button pressed');
                   if (isChecked) {
-                    // Handle registration action
-                    CollectionReference collRef = FirebaseFirestore.instance.collection('user');
-                    final userControlloer = Get.find<UserController>();
-                    collRef.add(
-                      {
-                          'user name': userControlloer.userName.text,
-                          'email': userControlloer.email.text,
-                          'last name': userControlloer.firstName.text,
-                          'first name': userControlloer.lastName.text,
-                          'password' : userControlloer.password
-                      }
-                    );
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginPage()),
-                    );
+                    if (userController.email.text.isNotEmpty &&
+                        userController.password.text.isNotEmpty &&
+                        userController.userName.text.isNotEmpty) {
+                      userController.registerUser();
+                    } else {
+                      Get.snackbar("Error", "Please fill in all fields.",
+                          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+                    }
                   } else {
-                    // Show an error message or prompt
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Please accept the terms and conditions.')),
-                    );
+                    Get.snackbar("Error", "Please accept the terms and conditions.",
+                        snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
                   }
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blueAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                child: Text(
-                    'Sign Up',
-                style: TextStyle(
-                  color: Colors.black,
-                ),),
+                child: Text('Sign Up', style: TextStyle(color: Colors.black)),
               ),
               SizedBox(height: 20),
+
+              // Navigate to Login Page
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text('Already have an account?'),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
-
-
+                      Get.to(() => LoginPage());
                     },
                     child: Text(
                       'Log In',
-                      style: TextStyle(
-                        color: Colors.blueAccent,
-                      ),
+                      style: TextStyle(color: Colors.blueAccent),
                     ),
                   ),
                 ],

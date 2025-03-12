@@ -196,7 +196,7 @@ class ClubDashboard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          _buildLeaderboardRow('1🏆', 'UserA', '4500', '30', 0.7),
+          _buildLeaderboardRow('1🏆', 'UserA', '4500', '30', 0.9),
           _buildLeaderboardRow('2🥈', 'UserB', '4200', '28', 0.6),
           _buildLeaderboardRow('3🥉', 'UserC', '4000', '25', 0.5),
           _buildLeaderboardRow('4', 'You (Emon)', '3800', '22', 0.4),
