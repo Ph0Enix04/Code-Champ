@@ -1,3 +1,4 @@
+import 'package:code_champ/home.dart';
 import 'package:code_champ/signUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -108,6 +109,8 @@ class _LoginPageState extends State<LoginPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.indigo,
                 ),
+                //remove it later
+                //onPressed: () => HomePage(),
                 onPressed: () => _login(context),
 
                 child: const Text('Log In', style: TextStyle(color: Colors.white)),

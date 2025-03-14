@@ -27,14 +27,14 @@ class UserController extends GetxController {
         password: password.text.trim(),
       );
 
-      // Get the unique User ID
-      String uid = userCredential.user!.uid;
+      // Use `userName` as the unique ID instead of Firebase UID
+      String uid = userName.text.trim();
 
       // Firebase Realtime Database Reference
       DatabaseReference ref = FirebaseDatabase.instance.ref("user/$uid");
 
+      // Store user data in Firebase Realtime Database
       await ref.set({
-        "name": userName.text.trim(),
         "email": email.text.trim(),
         "first_name": firstName.text.trim(),
         "last_name": lastName.text.trim(),
@@ -50,13 +50,15 @@ class UserController extends GetxController {
       Get.to(() => LoginPage());
 
     } on FirebaseAuthException catch (e) {
-      //print("❌ Firebase Auth Error: ${e.message}");
       Get.snackbar("Error", e.message ?? "An error occurred",
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Get.theme.cardColor);
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Get.theme.cardColor);
     } catch (error) {
-      //print("❌ Error: $error");
       Get.snackbar("Error", "Failed to register user",
-          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Get.theme.cardColor);
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Get.theme.cardColor);
     }
   }
 }

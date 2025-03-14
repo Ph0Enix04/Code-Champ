@@ -139,7 +139,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   Text('Already have an account?'),
                   TextButton(
                     onPressed: () {
-                      Get.to(() => LoginPage());
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                      );
                     },
                     child: Text(
                       'Log In',

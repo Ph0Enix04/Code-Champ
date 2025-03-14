@@ -1,6 +1,8 @@
 import 'package:code_champ/Club.dart';
 import 'package:flutter/material.dart';
 
+import 'Settings.dart';
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,11 @@ class HomePage extends StatelessWidget {
               );
               break;
             case 2:
-
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()), // Navigate to Settings
+              );
+              break;
               break;
             case 3:
 
