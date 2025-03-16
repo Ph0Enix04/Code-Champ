@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:code_champ/Friendlist.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -39,7 +40,6 @@ class _ProfilePageState extends State<ProfilePage> {
       return;
     }
 
-    // Fetch user details
     DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
@@ -59,7 +59,6 @@ class _ProfilePageState extends State<ProfilePage> {
       });
     }
 
-    // Fetch tracker data for the last 30 days
     QuerySnapshot trackerSnapshot = await FirebaseFirestore.instance
         .collection('users')
         .doc(user.uid)
@@ -75,7 +74,6 @@ class _ProfilePageState extends State<ProfilePage> {
     Map<DateTime, int> contestMap = {};
     DateTime startDate = DateTime.now().subtract(const Duration(days: 30));
 
-    // Populate contest data from Firestore
     for (var doc in trackerSnapshot.docs) {
       Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
       totalProblems += data['total'] as int;
@@ -84,7 +82,6 @@ class _ProfilePageState extends State<ProfilePage> {
       contestMap[date] = data['contests'] as int;
     }
 
-    // Generate continuous data for 30 days
     List<FlSpot> spots = [];
     for (int i = 0; i <= 30; i++) {
       DateTime day = startDate.add(Duration(days: i));
@@ -115,7 +112,6 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Avatar and Basic Info
             Center(
               child: Column(
                 children: [
@@ -141,12 +137,32 @@ class _ProfilePageState extends State<ProfilePage> {
                       color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                     ),
                   ),
+                  const SizedBox(height: 10),
+                  // Friends Button
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => FriendsListPage()),
+                      );
+                    },
+                    icon: const Icon(Icons.group, color: Colors.white),
+                    label: const Text(
+                      'View Friends',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 20),
-
-            // Stats Card
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -181,8 +197,6 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // Contest Graph
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -286,13 +300,13 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundColor: Colors.white,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        currentIndex: 3,
+        currentIndex: 3, // Profile is now index 3
         onTap: (index) {
           switch (index) {
             case 0:
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) =>  HomePage()),
+                MaterialPageRoute(builder: (context) => HomePage()),
               );
               break;
             case 1:
@@ -307,7 +321,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
               break;
-            case 3:
+            case 3: // Profile (do nothing since we're already here)
               break;
           }
         },

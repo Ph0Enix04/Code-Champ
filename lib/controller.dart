@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 class UserController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final DatabaseReference _dbRef = FirebaseDatabase.instance.ref();
 
   // TextField Controllers
   var email = TextEditingController();
@@ -13,15 +14,22 @@ class UserController extends GetxController {
   var lastName = TextEditingController();
   var userName = TextEditingController();
 
+  @override
+  void onInit() {
+    super.onInit();
+    _loadUserData(); // Load user data when controller initializes
+  }
+
+  // Check if username exists
   Future<bool> checkName(String userName) async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref("users/$userName");
+    DatabaseReference ref = _dbRef.child("users").child(userName);
     DataSnapshot snapshot = await ref.get();
     return snapshot.exists;
   }
 
+  // Register user
   Future<bool> registerUser() async {
     try {
-      // Check if the username already exists
       bool exists = await checkName(userName.text.trim());
       if (exists) {
         Get.snackbar(
@@ -34,23 +42,19 @@ class UserController extends GetxController {
         return false;
       }
 
-      // Register user in Firebase Authentication
-      UserCredential userCredential =
-      await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email.text.trim(),
         password: password.text.trim(),
       );
 
-      // Use Firebase-generated UID
       String uid = userCredential.user!.uid;
-      DatabaseReference ref = FirebaseDatabase.instance.ref("users/$uid");
+      DatabaseReference ref = _dbRef.child("users").child(uid);
 
-      // Store user data in Firebase Realtime Database (excluding password)
       await ref.set({
         "email": email.text.trim(),
         "first_name": firstName.text.trim(),
         "last_name": lastName.text.trim(),
-        "username": userName.text.trim(), // Store username separately
+        "username": userName.text.trim(),
       });
 
       Get.snackbar(
@@ -62,7 +66,7 @@ class UserController extends GetxController {
       );
       print("✅ User registered successfully with UID: $uid");
 
-      return true; // Registration successful
+      return true;
     } on FirebaseAuthException catch (e) {
       String errorMessage;
       switch (e.code) {
@@ -98,13 +102,14 @@ class UserController extends GetxController {
     }
   }
 
-  // Login method added to UserController for consistency
+  // Login user
   Future<bool> loginUser(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password.trim(),
       );
+      await _loadUserData(); // Load username after login
       Get.snackbar(
         "Success",
         "Logged in successfully",
@@ -136,6 +141,37 @@ class UserController extends GetxController {
         colorText: Colors.white,
       );
       return false;
+    }
+  }
+
+  // Load user data from Realtime Database
+  Future<void> _loadUserData() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      try {
+        DatabaseReference ref = _dbRef.child("users").child(user.uid);
+        DataSnapshot snapshot = await ref.get();
+        if (snapshot.exists) {
+          Map<dynamic, dynamic> data = snapshot.value as Map<dynamic, dynamic>;
+          userName.text = data['username'] ?? 'Anonymous';
+        } else {
+          userName.text = 'Anonymous'; // Default if no data exists
+        }
+        update(); // Notify GetBuilder to rebuild
+      } catch (e) {
+        Get.snackbar(
+          "Error",
+          "Failed to load user data: $e",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        userName.text = 'Anonymous'; // Fallback on error
+        update();
+      }
+    } else {
+      userName.text = 'Guest'; // Fallback if not logged in
+      update();
     }
   }
 }
