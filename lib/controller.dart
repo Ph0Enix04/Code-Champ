@@ -1,12 +1,7 @@
-import 'package:code_champ/login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'Thankyou.dart';
 
 class UserController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -18,47 +13,129 @@ class UserController extends GetxController {
   var lastName = TextEditingController();
   var userName = TextEditingController();
 
+  Future<bool> checkName(String userName) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("users/$userName");
+    DataSnapshot snapshot = await ref.get();
+    return snapshot.exists;
+  }
 
-  Future<void> registerUser() async {
+  Future<bool> registerUser() async {
     try {
-      // Firebase Authentication: Register User
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      // Check if the username already exists
+      bool exists = await checkName(userName.text.trim());
+      if (exists) {
+        Get.snackbar(
+          "Error",
+          "Username already exists",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return false;
+      }
+
+      // Register user in Firebase Authentication
+      UserCredential userCredential =
+      await _auth.createUserWithEmailAndPassword(
         email: email.text.trim(),
         password: password.text.trim(),
       );
 
-      // Use `userName` as the unique ID instead of Firebase UID
-      String uid = userName.text.trim();
+      // Use Firebase-generated UID
+      String uid = userCredential.user!.uid;
+      DatabaseReference ref = FirebaseDatabase.instance.ref("users/$uid");
 
-      // Firebase Realtime Database Reference
-      DatabaseReference ref = FirebaseDatabase.instance.ref("user/$uid");
-
-      // Store user data in Firebase Realtime Database
+      // Store user data in Firebase Realtime Database (excluding password)
       await ref.set({
         "email": email.text.trim(),
         "first_name": firstName.text.trim(),
         "last_name": lastName.text.trim(),
-        "password": password.text,
+        "username": userName.text.trim(), // Store username separately
       });
 
-      // Show Success Message
-      Get.snackbar("Success", "User registered successfully",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Get.theme.primaryColor,
-          colorText: Get.theme.cardColor);
-      print("✅ User registered successfully");
-      Get.to(() => LoginPage());
+      Get.snackbar(
+        "Success",
+        "User registered successfully",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      print("✅ User registered successfully with UID: $uid");
 
+      return true; // Registration successful
     } on FirebaseAuthException catch (e) {
-      Get.snackbar("Error", e.message ?? "An error occurred",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Get.theme.cardColor);
+      String errorMessage;
+      switch (e.code) {
+        case 'email-already-in-use':
+          errorMessage = "This email is already registered.";
+          break;
+        case 'weak-password':
+          errorMessage = "Password is too weak.";
+          break;
+        case 'invalid-email':
+          errorMessage = "Invalid email format.";
+          break;
+        default:
+          errorMessage = e.message ?? "An error occurred";
+      }
+      Get.snackbar(
+        "Error",
+        errorMessage,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
     } catch (error) {
-      Get.snackbar("Error", "Failed to register user",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Get.theme.cardColor);
+      Get.snackbar(
+        "Error",
+        "Failed to register user: $error",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    }
+  }
+
+  // Login method added to UserController for consistency
+  Future<bool> loginUser(String email, String password) async {
+    try {
+      await _auth.signInWithEmailAndPassword(
+        email: email.trim(),
+        password: password.trim(),
+      );
+      Get.snackbar(
+        "Success",
+        "Logged in successfully",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      return true;
+    } on FirebaseAuthException catch (e) {
+      String errorMessage;
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = "No user found with this email.";
+          break;
+        case 'wrong-password':
+          errorMessage = "Incorrect password.";
+          break;
+        case 'invalid-email':
+          errorMessage = "Invalid email format.";
+          break;
+        default:
+          errorMessage = e.message ?? "An error occurred";
+      }
+      Get.snackbar(
+        "Error",
+        errorMessage,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
     }
   }
 }

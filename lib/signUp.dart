@@ -5,6 +5,8 @@ import 'controller.dart';
 import 'login.dart';
 
 class RegistrationPage extends StatefulWidget {
+  const RegistrationPage({super.key});
+
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
 }
@@ -12,14 +14,14 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage> {
   bool isChecked = false;
 
-  // Initialize UserController Once
-  final UserController userController = Get.put(UserController());
+  // Use GetX to find the existing UserController instance
+  final UserController userController = Get.find<UserController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registration'),
+        title: const Text('Registration'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
@@ -28,68 +30,59 @@ class _RegistrationPageState extends State<RegistrationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              SizedBox(height: 40),
-              Text('Create Your Account',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87)),
-              SizedBox(height: 20),
-
-              // Username Field
+              const SizedBox(height: 40),
+              const Text('Create Your Account',
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87)),
+              const SizedBox(height: 20),
               TextField(
                 controller: userController.userName,
                 decoration: InputDecoration(
                   hintText: 'Username',
-                  prefixIcon: Icon(Icons.person),
+                  prefixIcon: const Icon(Icons.person),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
-              SizedBox(height: 16),
-
-              // First Name Field
+              const SizedBox(height: 16),
               TextField(
                 controller: userController.firstName,
                 decoration: InputDecoration(
                   hintText: 'First Name',
-                  prefixIcon: Icon(Icons.account_circle),
+                  prefixIcon: const Icon(Icons.account_circle),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
-              SizedBox(height: 16),
-
-              // Last Name Field
+              const SizedBox(height: 16),
               TextField(
                 controller: userController.lastName,
                 decoration: InputDecoration(
                   hintText: 'Last Name',
-                  prefixIcon: Icon(Icons.account_circle),
+                  prefixIcon: const Icon(Icons.account_circle),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
-              SizedBox(height: 16),
-
-              // Email Field
+              const SizedBox(height: 16),
               TextField(
                 controller: userController.email,
                 decoration: InputDecoration(
                   hintText: 'Email',
-                  prefixIcon: Icon(Icons.email),
+                  prefixIcon: const Icon(Icons.email),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
-              SizedBox(height: 16),
-
-              // Password Field
+              const SizedBox(height: 16),
               TextField(
                 controller: userController.password,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: 'Password',
-                  prefixIcon: Icon(Icons.lock),
+                  prefixIcon: const Icon(Icons.lock),
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
                 ),
               ),
-              SizedBox(height: 20),
-
-              // Terms and Conditions Checkbox
+              const SizedBox(height: 20),
               Row(
                 children: <Widget>[
                   Checkbox(
@@ -100,7 +93,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       });
                     },
                   ),
-                  Expanded(
+                  const Expanded(
                     child: Text(
                       'I accept the terms and conditions',
                       style: TextStyle(fontSize: 16),
@@ -108,43 +101,58 @@ class _RegistrationPageState extends State<RegistrationPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-
-              // Sign Up Button
+              const SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  print('Sign Up button pressed');
-                  if (isChecked) {
-                    if (userController.email.text.isNotEmpty &&
-                        userController.password.text.isNotEmpty &&
-                        userController.userName.text.isNotEmpty) {
-                      userController.registerUser();
-                    } else {
-                      Get.snackbar("Error", "Please fill in all fields.",
-                          snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
-                    }
-                  } else {
-                    Get.snackbar("Error", "Please accept the terms and conditions.",
-                        snackPosition: SnackPosition.BOTTOM, backgroundColor: Colors.red, colorText: Colors.white);
+                onPressed: () async {
+                  if (!isChecked) {
+                    Get.snackbar(
+                      "Error",
+                      "Please accept the terms and conditions.",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
+                  if (userController.email.text.isEmpty ||
+                      userController.password.text.isEmpty ||
+                      userController.userName.text.isEmpty ||
+                      userController.firstName.text.isEmpty ||
+                      userController.lastName.text.isEmpty) {
+                    Get.snackbar(
+                      "Error",
+                      "Please fill in all fields.",
+                      snackPosition: SnackPosition.BOTTOM,
+                      backgroundColor: Colors.red,
+                      colorText: Colors.white,
+                    );
+                    return;
+                  }
+
+                  bool success = await userController.registerUser();
+                  if (success) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) =>  ThankYouPage()),
+                    );
                   }
                 },
-                child: Text('Sign Up', style: TextStyle(color: Colors.black)),
+                child: const Text('Sign Up', style: TextStyle(color: Colors.black)),
               ),
-              SizedBox(height: 20),
-
-              // Navigate to Login Page
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Already have an account?'),
+                  const Text('Already have an account?'),
                   TextButton(
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
+                        MaterialPageRoute(builder: (context) => const LoginPage()),
                       );
                     },
-                    child: Text(
+                    child: const Text(
                       'Log In',
                       style: TextStyle(color: Colors.blueAccent),
                     ),

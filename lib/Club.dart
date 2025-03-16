@@ -1,13 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:code_champ/Profile.dart';
 import 'package:code_champ/Settings.dart';
 import 'package:code_champ/home.dart';
 import 'package:flutter/material.dart';
+import 'PersonalTracker.dart'; // Import the new page
 
 class ClubDashboard extends StatelessWidget {
   const ClubDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Coding Warriors'),
@@ -20,6 +24,8 @@ class ClubDashboard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildClubInfo(context),
+            const SizedBox(height: 20),
+            _buildPersonalTrackerCard(context), // New section
             const SizedBox(height: 20),
             _buildJoinedClubs(context),
             const SizedBox(height: 20),
@@ -36,51 +42,36 @@ class ClubDashboard extends StatelessWidget {
         backgroundColor: Colors.white,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
+        currentIndex: 1, // Highlight Clubs tab
         onTap: (index) {
           switch (index) {
             case 0:
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()), // Navigate to Home
+                MaterialPageRoute(builder: (context) =>  HomePage()),
               );
               break;
             case 1:
               break; // Already on ClubDashboard
-
             case 2:
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => SettingsPage()), // Navigate to Settings
+                MaterialPageRoute(builder: (context) => const SettingsPage()),
               );
               break;
-/*
             case 3:
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Profile
+                MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Settings
               );
               break;
-*/
-
           }
         },
         items: const [
-          BottomNavigationBarItem(
-            label: "Home",
-            icon: Icon(Icons.home_filled),
-          ),
-          BottomNavigationBarItem(
-            label: "Clubs",
-            icon: Icon(Icons.people_alt_outlined),
-          ),
-          BottomNavigationBarItem(
-            label: "Settings",
-            icon: Icon(Icons.settings_sharp),
-          ),
-          BottomNavigationBarItem(
-            label: "Profile",
-            icon: Icon(Icons.account_circle_sharp),
-          ),
+          BottomNavigationBarItem(label: "Home", icon: Icon(Icons.home_filled)),
+          BottomNavigationBarItem(label: "Clubs", icon: Icon(Icons.people_alt_outlined)),
+          BottomNavigationBarItem(label: "Settings", icon: Icon(Icons.settings_sharp)),
+          BottomNavigationBarItem(label: "Profile", icon: Icon(Icons.account_circle_sharp)),
         ],
       ),
     );
@@ -149,6 +140,63 @@ class ClubDashboard extends StatelessWidget {
     );
   }
 
+  Widget _buildPersonalTrackerCard(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const PersonalTrackerPage()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: isDarkMode ? Colors.grey[900] : Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: isDarkMode ? Colors.black.withOpacity(0.5) : Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Personal Tracker',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: isDarkMode ? Colors.white : Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  'Track your coding progress',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+                  ),
+                ),
+              ],
+            ),
+            Icon(
+              Icons.arrow_forward_ios,
+              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _buildBadge(BuildContext context, String text) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -169,7 +217,6 @@ class ClubDashboard extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildJoinedClubs(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -220,7 +267,6 @@ class ClubDashboard extends StatelessWidget {
     );
   }
 
-
   Widget _buildClubTile(BuildContext context, String name, String members, String rank) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -243,7 +289,6 @@ class ClubDashboard extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildLeaderboard(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -282,7 +327,6 @@ class ClubDashboard extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildLeaderboardRow(BuildContext context, String rank, String name, String points, String solved, double activity) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -341,7 +385,6 @@ class ClubDashboard extends StatelessWidget {
     );
   }
 
-
   Widget _buildUpcomingEvents(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -379,7 +422,6 @@ class ClubDashboard extends StatelessWidget {
     );
   }
 
-
   Widget _buildEventTile(BuildContext context, String event) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -399,7 +441,6 @@ class ClubDashboard extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildRecentAnnouncements(BuildContext context) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
@@ -437,7 +478,6 @@ class ClubDashboard extends StatelessWidget {
     );
   }
 
-
   Widget _buildAnnouncementTile(BuildContext context, String announcement) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
@@ -457,6 +497,4 @@ class ClubDashboard extends StatelessWidget {
       ),
     );
   }
-
-
 }

@@ -1,8 +1,10 @@
-import 'package:code_champ/home.dart';
-import 'package:code_champ/signUp.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'controller.dart'; // Import UserController
 import 'forgotpass.dart';
+import 'home.dart';
+import 'signUp.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -12,33 +14,26 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
+  final UserController userController = Get.find<UserController>(); // Use GetX controller
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login(BuildContext context) async{
-    String _email = _emailController.text.trim();
-    String _password = _passwordController.text.trim();
-    if (_email.isEmpty || _password.isEmpty) {
+  void _login(BuildContext context) async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
       _showMessage("Email and Password must be filled");
       return;
     }
-    try {
 
-      await FirebaseAuth.instance.signInWithEmailAndPassword(email: _email, password: _password);
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => HomePage()),
-      // );
+    bool success = await userController.loginUser(email, password);
+    if (success) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) =>  HomePage()),
+      );
     }
-    on FirebaseAuthException catch (e) {
-      _showMessage("Invalid email or password");
-      print(e.toString());
-    }
-    catch (e) {
-      print(e.toString());
-    }
-
   }
 
   void _showMessage(String message) {
@@ -100,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                   child: const Text(
                     "Forgot Password?",
-                    style: TextStyle(color: Colors.blue)
+                    style: TextStyle(color: Colors.blue),
                   ),
                 ),
               ),
@@ -109,19 +104,16 @@ class _LoginPageState extends State<LoginPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.indigo,
                 ),
-                //remove it later
-                //onPressed: () => HomePage(),
                 onPressed: () => _login(context),
-
                 child: const Text('Log In', style: TextStyle(color: Colors.white)),
               ),
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                   Navigator.push(
-                     context,
-                     MaterialPageRoute(builder: (context) => RegistrationPage()),
-                   );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegistrationPage()),
+                  );
                 },
                 child: const Text(
                   "Don't have an account? Register now",

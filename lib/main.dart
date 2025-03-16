@@ -1,11 +1,15 @@
 import 'package:code_champ/home.dart';
+import 'package:code_champ/splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:provider/provider.dart';
 import 'package:code_champ/theme_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:code_champ/firebase_options.dart';
 
 import 'Settings.dart';
+import 'controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,7 +17,7 @@ void main() async {
     name: 'name here',
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
+  Get.put(UserController());
   runApp(
     MultiProvider(
       providers: [
@@ -36,7 +40,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      home:  HomePage(), // Keeping SettingsPage const
+      home:  SplashScreen(), // Keeping SettingsPage const
     );
   }
 }

@@ -1,9 +1,13 @@
 import 'package:code_champ/Club.dart';
+import 'package:code_champ/Profile.dart';
+import 'package:code_champ/controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'Settings.dart';
 
 class HomePage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +47,10 @@ class HomePage extends StatelessWidget {
               break;
               break;
             case 3:
-
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Settings
+              );
               break;
           }
         },
@@ -72,7 +79,14 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Welcome, Emon!", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              GetBuilder<UserController>(
+                builder: (controller) {
+                  return Text(
+                    "Welcome, ${controller.userName.text}!",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  );
+                },
+              ),
               SizedBox(height: 10),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
